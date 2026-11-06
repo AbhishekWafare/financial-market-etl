@@ -66,8 +66,7 @@ The pipeline follows a Medallion Architecture-inspired approach consisting of th
 
 ### 1. Bronze Layer – Ingestion Data
 
-Stores JSONB snapshots of the ingested ETL payload in PostgreSQL.
-
+Stores JSONB snapshots of the transformed and validated financial market payload received from the ETL pipeline.
 **Table:**
 
 - `tf_bronze_market_data`
@@ -79,7 +78,6 @@ Stores cleaned, transformed, and validated financial market records.
 **Tables:**
 
 - `tf_silver_market_data`
-- `tf_bitcoin_price`
 
 `tf_bitcoin_price` maintains the historical price records for all six financial assets.
 
@@ -217,13 +215,17 @@ financial-market-etl/
 │   │   ├── db_connection.py
 │   │   └── failure_alert.py
 │   │
-│   ├── backup/              # Generated CSV backups
-│   └── plots/               # Generated visualizations
+│   ├── backup/       # Generated CSV backups
+│   └── plots/        # Generated charts
 │
 ├── dashboard/
 │   └── TaskFlow_app.py
 │
-├── logs/                    # Runtime-generated Airflow logs
+├── docs/
+│   └── images/
+│       ├── dashboard1.png
+│       ├── dashboard2.png
+│       └── dashboard3.png
 │
 ├── docker-compose.yaml
 ├── requirements.txt
@@ -252,7 +254,7 @@ An active internet connection is required to retrieve financial market data from
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/<your-github-username>/financial-market-etl.git
+git clone https://github.com/AbhishekWafare/financial-market-etl.git
 ```
 
 Navigate to the project directory:
@@ -425,6 +427,7 @@ The dashboard displays:
 - Latest prices for Bitcoin, Ethereum, Gold, Silver, Crude Oil, and S&P 500.
 - Normalized financial market performance comparisons.
 - Recent financial market records.
+- Normalizes the first valid observation of each asset to an index value of 100, enabling relative performance comparisons across financial instruments with different price scales.
 
 Dashboard data is cached for 60 seconds.
 
@@ -548,11 +551,18 @@ Each asset is normalized against its first valid observation to compare relative
 
 The Streamlit dashboard provides an interactive interface for viewing the latest market prices and normalized performance chart.
 
-## Dashboard Preview
 
-![Financial Market Dashboard](docs/images/dashboard1.png)
-![Financial Market Dashboard](docs/images/dashboard2.png)
-![Financial Market Dashboard](docs/images/dashboard3.png)
+### Dashboard Overview
+
+![Financial Market Dashboard - Overview](docs/images/dashboard1.png)
+
+### Market Analytics
+
+![Financial Market Dashboard - Analytics](docs/images/dashboard2.png)
+
+### Market Data
+
+![Financial Market Dashboard - Market Data](docs/images/dashboard3.png)
 
 ---
 
