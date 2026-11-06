@@ -1,0 +1,66 @@
+
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-airflow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-airflow}
+
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  airflow:
+    image: apache/airflow:3.2.1
+    restart: unless-stopped
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: "postgresql+psycopg2://${POSTGRES_USER:-airflow}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-airflow}"
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+
+      _PIP_ADDITIONAL_REQUIREMENTS: "apache-airflow-providers-smtp matplotlib yfinance"
+
+      POSTGRES_HOST: ${POSTGRES_HOST:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-airflow}
+      POSTGRES_USER: ${POSTGRES_USER:-airflow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      ALERT_EMAIL: ${ALERT_EMAIL:-}
+
+      # Optional SMTP configuration
+      AIRFLOW__SMTP__SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      AIRFLOW__SMTP__SMTP_STARTTLS: "True"
+      AIRFLOW__SMTP__SMTP_SSL: "False"
+      AIRFLOW__SMTP__SMTP_USER: ${SMTP_USER:-}
+      AIRFLOW__SMTP__SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      AIRFLOW__SMTP__SMTP_PORT: ${SMTP_PORT:-587}
+      AIRFLOW__SMTP__SMTP_MAIL_FROM: ${SMTP_MAIL_FROM:-}
+
+      PYTHONPATH: /opt/airflow/dags
+
+    command: standalone
+
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+
+volumes:
+  postgres-db-volume:

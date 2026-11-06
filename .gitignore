@@ -1,0 +1,50 @@
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# Airflow
+logs/
+airflow.db/
+
+# Generated backups
+/dags/backup/*.csv
+
+# Generated visualizations
+/dags/plots/*.png
+/dags/plots/*.jpg
+/dags/plots/*.jpeg
+
+# Local databases
+*.db
+
+# Temporary backup files
+*.bak
+
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# IDE
+.vscode/
+.idea/
+
+# Operating system
+.DS_Store
+Thumbs.db
+
+# Testing and build artifacts
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+build/
+dist/
+
+# Log files
+*.log
