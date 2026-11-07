@@ -10,7 +10,7 @@ PostgreSQL loading, backups, and analytical processing.
 import os
 from datetime import datetime, timedelta
 
-from airflow.decorators import dag, task # type: ignore
+from airflow.sdk import dag # type: ignore
 
 from tasks.extract import extract
 from tasks.transform import transform
