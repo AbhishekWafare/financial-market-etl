@@ -246,6 +246,10 @@ echo
 echo "To view service logs:"
 echo "  docker compose logs -f airflow"
 echo
+echo "To view table data in DB:"
+echo "  docker compose exec postgres psql -U airflow -d airflow"
+echo "   select * from tf_bitcoin_price order by time desc;"
+echo
 echo "To stop the project:"
 echo "  ./stop-project.sh"
 echo
